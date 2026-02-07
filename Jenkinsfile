@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'Jenkis-agent'
+        label 'Jenkins-agent'
     }
 
     tools {
@@ -9,7 +9,6 @@ pipeline {
     }
 
     stages {
-
         stage("Cleanup Workspace") {
             steps {
                 cleanWs()
@@ -33,6 +32,16 @@ pipeline {
         stage("Test Application") {
             steps {
                 sh "mvn test"
+            }
+        }
+
+        stage("SonarQube Analysis") {
+            steps {
+                script {
+                    withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') {
+                        sh "mvn sonar:sonar"
+                    }
+                }
             }
         }
     }
