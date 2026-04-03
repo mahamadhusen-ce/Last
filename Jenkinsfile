@@ -45,13 +45,16 @@ pipeline {
             }
         }
 
-        stage("SonarQube Analysis") {
+    stage("SonarQube Analysis") {
             steps {
-                withSonarQubeEnv('SonarQubeServer') {
-                    sh "mvn sonar:sonar"
+                script {
+                    withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') {
+                        sh "mvn sonar:sonar"
+                    }
                 }
             }
         }
+
 
         stage("Quality Gate") {
             steps {
