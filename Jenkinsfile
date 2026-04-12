@@ -55,35 +55,17 @@ pipeline {
             }
         }
 
-        stage("Quality Gate") {
-            steps {
-                script {
-                    // Add timeout to prevent infinite wait
-                    timeout(time: 5, unit: 'MINUTES') {
-                        def qg = waitForQualityGate abortPipeline: false
-                        echo "Quality Gate status: ${qg.status}"
-                        if (qg.status != 'OK') {
-                            echo "⚠️ Quality Gate did not pass: ${qg.status}"
-                            // Uncomment to fail build: error "Quality Gate failed"
-                        }
-                    }
-                }
+     
+       stage("Quality Gate"){
+           steps {
+               script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
+                }	
             }
+
         }
 
-        stage("Build & Push Docker Image") {
-            steps {
-                script {
-                    def docker_image
-
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
-                        docker_image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
-                        docker_image.push()
-                        docker_image.push('latest')
-                    }
-                }
-            }
-        }
+     
     }
 
     post {
