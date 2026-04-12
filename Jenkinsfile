@@ -45,7 +45,7 @@ pipeline {
             }
         }
 
-    stage("SonarQube Analysis") {
+        stage("SonarQube Analysis") {
             steps {
                 script {
                     withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') {
@@ -55,10 +55,19 @@ pipeline {
             }
         }
 
-
         stage("Quality Gate") {
             steps {
-                waitForQualityGate abortPipeline: false
+                script {
+                    // Add timeout to prevent infinite wait
+                    timeout(time: 5, unit: 'MINUTES') {
+                        def qg = waitForQualityGate abortPipeline: false
+                        echo "Quality Gate status: ${qg.status}"
+                        if (qg.status != 'OK') {
+                            echo "⚠️ Quality Gate did not pass: ${qg.status}"
+                            // Uncomment to fail build: error "Quality Gate failed"
+                        }
+                    }
+                }
             }
         }
 
