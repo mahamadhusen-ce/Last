@@ -92,18 +92,15 @@ pipeline {
             }
         }
 
-        stage("Trivy Scan") {
-            steps {
-                script {
-                    sh '''
-                    docker run -v /var/run/docker.sock:/var/run/docker.sock \
-                    aquasec/trivy image cyruss07/register-app-pipeline:latest \
-                    --no-progress --scanners vuln --exit-code 0 \
-                    --severity HIGH,CRITICAL --format table
-                    '''
-                }
-            }
-        }
+      stage("Trivy Security Scan") {
+      steps {
+        sh """
+        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+        aquasec/trivy:0.48.3 image ${IMAGE_NAME}:${IMAGE_TAG} \
+        --no-progress --severity HIGH,CRITICAL --format table
+        """
+      }
+     }
 
         stage("Cleanup Artifacts") {
             steps {
