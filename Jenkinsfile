@@ -2,10 +2,12 @@ pipeline {
     agent {
         label 'Jenkins-agent'
     }
+
     tools {
         jdk 'java17'
         maven 'Maven3'
     }
+
     environment {
         APP_NAME = "register-app-pipeline"
         RELEASE = "1.0.0"
@@ -15,7 +17,9 @@ pipeline {
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
         JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
     }
+
     stages {
+
         stage("Cleanup Workspace") {
             steps {
                 cleanWs()
@@ -76,31 +80,31 @@ pipeline {
             }
         }
 
-        // ✅ NEW STAGE ADDED HERE
+        // ✅ FIXED CD TRIGGER STAGE
         stage("Trigger CD Pipeline") {
             steps {
                 script {
                     sh """
-                    curl -v -k --user cyrus:${JENKINS_API_TOKEN} \
+                    curl -v -k --user LAST-X:${JENKINS_API_TOKEN} \
                     -X POST \
                     -H 'cache-control: no-cache' \
                     -H 'content-type: application/x-www-form-urlencoded' \
                     --data 'IMAGE_TAG=${IMAGE_TAG}' \
-                    "http://ec2-3-122-240-56.eu-central-1.compute.amazonaws.com:8080/job/gitops-register-app-cd/buildWithParameters?token=gitops-token"
+                    "http://3.122.240.56:8080/job/gitops-register-app-cd/buildWithParameters?token=gitops-token"
                     """
                 }
             }
         }
 
-      stage("Trivy Security Scan") {
-      steps {
-        sh """
-        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-        aquasec/trivy:0.48.3 image ${IMAGE_NAME}:${IMAGE_TAG} \
-        --no-progress --severity HIGH,CRITICAL --format table
-        """
-      }
-     }
+        stage("Trivy Security Scan") {
+            steps {
+                sh """
+                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                aquasec/trivy:0.48.3 image ${IMAGE_NAME}:${IMAGE_TAG} \
+                --no-progress --severity HIGH,CRITICAL --format table
+                """
+            }
+        }
 
         stage("Cleanup Artifacts") {
             steps {
