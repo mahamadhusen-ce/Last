@@ -82,12 +82,12 @@
         <label>Confirm Password</label>
         <input type="password" name="confirm_password" placeholder="Confirm password" required>
 
-        <button type="submit">Register Now</button>
+        <button type="submit"> <a href="https://www.epicdope.com/wp-content/uploads/2021/12/Eren-Yeager.jpg">Login here</a></p></button>
 
     </form>
 
     <div class="footer">
-        <p>Already registered? <a href="#">Login here</a></p>
+        <p>Already registered? <a href="https://www.epicdope.com/wp-content/uploads/2021/12/Eren-Yeager.jpg">Login here</a></p>
     </div>
 
     <hr>
