@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DevOps Test Registration version 2</title>
+    <title>version 2</title>
     <style>
         body {
             font-family: Arial;
