@@ -56,7 +56,7 @@
 <body>
 
 <div class="container">
-    <h2>🚀 DevOps Learning - Test Form</h2>
+    <h2> v1 DevOps Learning - Test Form</h2>
 
     <form action="test_submit.php" method="POST">
 
